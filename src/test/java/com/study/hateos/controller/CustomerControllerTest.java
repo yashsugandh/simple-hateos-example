@@ -55,11 +55,12 @@ public class CustomerControllerTest {
 
   @Test
   public void getOrdersTest() throws IOException {
-    final String orders = TestUtils
-        .getFileInStringFromClasspath("get-all-orders-response.json");
+    final String orders = TestUtils.getFileInStringFromClasspath("get-customer-by-id.json");
     ObjectMapper objectMapper = new ObjectMapper();
-    final List list = objectMapper.readValue(orders, List.class);
-    Assert.assertEquals(2,list.size());
+    final Customer customer = objectMapper.readValue(orders, Customer.class);
+    Mockito.when(customerService.getCustomerById(Mockito.anyLong())).thenReturn(customer);
+    final Resources<Order> ordersResponse = customerController.getOrders(1L);
+    Assert.assertEquals(2, ordersResponse.getContent().size());
 
   }
 

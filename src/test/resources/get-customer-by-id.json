@@ -1,0 +1,16 @@
+{
+  "id": 1,
+  "customerName": "yash",
+  "orders": [
+    {
+      "orderId": 2,
+      "dishName": "pizza",
+      "links": []
+    },
+    {
+      "orderId": 3,
+      "dishName": "burger",
+      "links": []
+    }
+  ]
+}
