@@ -20,22 +20,21 @@ public class OrderServiceImplTest {
   private OrderRepositroy orderRepositroy;
 
   @Test
-  public void addOrderTest(){
+  public void addOrderTest() {
     Mockito.when(orderRepositroy.save(Mockito.any())).thenReturn(new Order());
 
     orderService.addOrder(new Order());
   }
 
   @Test
-  public void getOrderByIdTest(){
+  public void getOrderByIdTest() {
     Order order = new Order();
     order.setDishName("pizza");
     order.setOrderId(5L);
-    Mockito.when(orderRepositroy.findById(Mockito.anyLong())).thenReturn(
-        java.util.Optional.of(order));
+    Mockito.when(orderRepositroy.findById(Mockito.anyLong()))
+        .thenReturn(java.util.Optional.of(order));
     final Order orderById = orderService.getOrderById(5L);
 
     Assert.assertEquals("pizza", orderById.getDishName());
   }
-
 }

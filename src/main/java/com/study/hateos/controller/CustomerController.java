@@ -5,6 +5,7 @@ import com.study.hateos.model.Order;
 import com.study.hateos.service.CustomerService;
 import com.study.hateos.service.OrderService;
 import org.springframework.hateoas.Link;
+import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.Resources;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -45,9 +46,9 @@ public class CustomerController {
    * @return
    */
   @PostMapping("/addCustomer")
-  public ResponseEntity addCustomer(@RequestBody@Valid Customer customer) {
+  public ResponseEntity addCustomer(@RequestBody @Valid Customer customer) {
     customerService.addCustomer(customer);
-    return new ResponseEntity(HttpStatus.CREATED);
+    return new ResponseEntity(customer, HttpStatus.CREATED);
   }
 
   /**
@@ -57,8 +58,9 @@ public class CustomerController {
    * @return
    */
   @GetMapping("/getCustomer/{id}")
-  public Customer getCustomerById(@PathVariable Long id) {
-    return customerService.getCustomerById(id);
+  public Resource<Customer> getCustomerById(@PathVariable Long id) {
+    final Customer customerById = customerService.getCustomerById(id);
+    return new Resource<>(customerById, createCustomerSelfLink(id));
   }
 
   /**
@@ -69,10 +71,10 @@ public class CustomerController {
    * @return
    */
   @PostMapping("/addOrder/{customerId}")
-  public ResponseEntity addOrder(@RequestBody@Valid Order order, @PathVariable Long customerId) {
+  public ResponseEntity addOrder(@RequestBody @Valid Order order, @PathVariable Long customerId) {
     order.setCustomer(customerService.getCustomerById(customerId));
     orderService.addOrder(order);
-    return new ResponseEntity<>(HttpStatus.CREATED);
+    return new ResponseEntity<>(order, HttpStatus.CREATED);
   }
 
   /**
@@ -88,7 +90,7 @@ public class CustomerController {
 
     orders.stream().forEach(order -> order.add(createOrderLink(order)));
 
-    return new Resources<>(orders, createCustomerSelfLink(customerId));
+    return new Resources<>(orders, createAllOrdersSelfLink(customerId));
   }
 
   /**
@@ -108,8 +110,12 @@ public class CustomerController {
    * @param customerId
    * @return
    */
-  private Link createCustomerSelfLink(Long customerId) {
+  private Link createAllOrdersSelfLink(Long customerId) {
     return linkTo(methodOn(CustomerController.class).getOrders(customerId)).withSelfRel();
+  }
+
+  private Link createCustomerSelfLink(Long customerId) {
+    return linkTo(methodOn(CustomerController.class).getCustomerById(customerId)).withSelfRel();
   }
 
   /**

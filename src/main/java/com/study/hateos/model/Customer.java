@@ -27,11 +27,7 @@ public class Customer {
   @NotBlank
   private String customerName;
 
-  @OneToMany(
-      mappedBy = "customer",
-      cascade = CascadeType.ALL,
-      orphanRemoval = true
-  )
+  @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
   @JsonManagedReference
   private List<Order> orders;
 }

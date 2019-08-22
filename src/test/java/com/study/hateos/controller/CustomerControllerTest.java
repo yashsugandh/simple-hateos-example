@@ -12,12 +12,12 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.Resources;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.IOException;
-import java.util.List;
 
 @RunWith(SpringRunner.class)
 public class CustomerControllerTest {
@@ -42,14 +42,14 @@ public class CustomerControllerTest {
     Customer customer = new Customer();
     customer.setCustomerName("dummy");
     Mockito.when(customerService.getCustomerById(Mockito.anyLong())).thenReturn(customer);
-    final Customer customerById = customerController.getCustomerById(1L);
+    final Resource<Customer> customerById = customerController.getCustomerById(1L);
 
-    Assert.assertEquals("dummy", customerById.getCustomerName());
+    Assert.assertEquals("dummy", customerById.getContent().getCustomerName());
   }
 
   @Test
-  public void addOrderTest(){
-    final ResponseEntity responseEntity = customerController.addOrder(new Order(),1L);
+  public void addOrderTest() {
+    final ResponseEntity responseEntity = customerController.addOrder(new Order(), 1L);
     Assert.assertEquals(201, responseEntity.getStatusCodeValue());
   }
 
@@ -61,11 +61,10 @@ public class CustomerControllerTest {
     Mockito.when(customerService.getCustomerById(Mockito.anyLong())).thenReturn(customer);
     final Resources<Order> ordersResponse = customerController.getOrders(1L);
     Assert.assertEquals(2, ordersResponse.getContent().size());
-
   }
 
   @Test
-  public void getOrderById(){
+  public void getOrderById() {
     Order order = new Order();
     order.setDishName("pizza");
     order.setOrderId(5L);
